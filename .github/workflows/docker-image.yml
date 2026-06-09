@@ -37,7 +37,7 @@ jobs:
               run: |
                   docker build --pull . --file Dockerfile --tag ${IMAGE_NAME}
                   VERSION="${{ steps.version.outputs.version }}"
-                  IMAGE="birobyte1109/${IMAGE_NAME}"
+                  IMAGE="birobyte1110/${IMAGE_NAME}"
 
                   # Tag and push with branch name
                   docker tag "${IMAGE_NAME}" "${IMAGE}:${VERSION}"
