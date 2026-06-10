@@ -2,10 +2,13 @@ package com.ecommerce.ecommerce.product.dto;
 
 
 import com.ecommerce.ecommerce.category.dto.CategoryResponseDTO;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class ProductResponseDTO {
+public class ProductResponseDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
     private String name;
