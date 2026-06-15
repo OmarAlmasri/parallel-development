@@ -6,6 +6,7 @@ import com.ecommerce.ecommerce.order.dto.OrderItemResponseDTO;
 import com.ecommerce.ecommerce.order.dto.OrderResponseDTO;
 import com.ecommerce.ecommerce.users.User;
 import com.ecommerce.ecommerce.users.UserRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class OrderService {
     }
 
     // Get own order history
+    @Cacheable(cacheNames = "userOrders", key = "#email")
     @RichLog(category = LogCategory.ORDER, action = "GET_MY_ORDERS")
     public List<OrderResponseDTO> getMyOrders(String email) {
         User user = findUserOrThrow(email);
@@ -36,6 +38,7 @@ public class OrderService {
     }
 
     // Get single order by ID — user can only see own, admin sees all
+    @Cacheable(cacheNames = "orderDetails", key = "#email + ':' + #orderId")
     @RichLog(category = LogCategory.ORDER, action = "GET_ORDER_BY_ID")
     public OrderResponseDTO getOrderById(Long orderId, String email) {
         User user = findUserOrThrow(email);

@@ -1,8 +1,11 @@
 package com.ecommerce.ecommerce.order.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class OrderItemResponseDTO {
+public class OrderItemResponseDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long productId;
     private String productName;

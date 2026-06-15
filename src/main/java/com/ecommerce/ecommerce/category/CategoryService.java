@@ -5,6 +5,9 @@ import com.ecommerce.ecommerce.category.dto.CategoryRequestDTO;
 import com.ecommerce.ecommerce.category.dto.CategoryResponseDTO;
 import com.ecommerce.ecommerce.logging.LogCategory;
 import com.ecommerce.ecommerce.logging.RichLog;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +23,7 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
+    @Cacheable(cacheNames = "categories", key = "'all'")
     @RichLog(category = LogCategory.CATEGORY, action = "GET_CATEGORIES")
     public List<CategoryResponseDTO> getAllCategories() {
         return categoryRepository.findAll()
@@ -29,6 +33,10 @@ public class CategoryService {
     }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "categories", key = "'all'"),
+            @CacheEvict(cacheNames = "productLists", allEntries = true)
+    })
     @RichLog(category = LogCategory.CATEGORY, action = "CREATE_CATEGORY")
     public CategoryResponseDTO createCategory(CategoryRequestDTO dto) {
         if (categoryRepository.existsByNameIgnoreCase(dto.getName())) {
@@ -41,6 +49,10 @@ public class CategoryService {
     }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "categories", key = "'all'"),
+            @CacheEvict(cacheNames = "productLists", allEntries = true)
+    })
     @RichLog(category = LogCategory.CATEGORY, action = "DELETE_CATEGORY")
     public void deleteCategory(Long id) {
         if (!categoryRepository.existsById(id)) {

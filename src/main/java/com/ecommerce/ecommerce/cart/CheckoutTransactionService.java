@@ -174,6 +174,7 @@ public class CheckoutTransactionService {
         );
 
         evictProductCachesAfterCommit(purchasedProductIds);
+        evictOrderCachesAfterCommit(user.getEmail());
 
         return new CheckoutResponseDTO(order.getId(), total, skippedItems, message);
     }
@@ -233,6 +234,27 @@ public class CheckoutTransactionService {
             Cache productListsCache = cacheManager.getCache("productLists");
             if (productListsCache != null) {
                 productListsCache.clear();
+            }
+        };
+
+        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+            eviction.run();
+            return;
+        }
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                eviction.run();
+            }
+        });
+    }
+
+    private void evictOrderCachesAfterCommit(String userEmail) {
+        Runnable eviction = () -> {
+            Cache userOrdersCache = cacheManager.getCache("userOrders");
+            if (userOrdersCache != null) {
+                userOrdersCache.evict(userEmail);
             }
         };
 

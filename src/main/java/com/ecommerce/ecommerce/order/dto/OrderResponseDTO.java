@@ -1,11 +1,14 @@
 package com.ecommerce.ecommerce.order.dto;
 
 import com.ecommerce.ecommerce.order.OrderStatus;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class OrderResponseDTO {
+public class OrderResponseDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
     private Long userId;
