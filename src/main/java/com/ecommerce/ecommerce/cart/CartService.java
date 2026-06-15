@@ -2,6 +2,8 @@ package com.ecommerce.ecommerce.cart;
 
 import com.ecommerce.ecommerce.cart.dto.*;
 import com.ecommerce.ecommerce.inventory.InventoryLockService;
+import com.ecommerce.ecommerce.logging.LogCategory;
+import com.ecommerce.ecommerce.logging.RichLog;
 import com.ecommerce.ecommerce.product.Product;
 import com.ecommerce.ecommerce.product.ProductRepository;
 import com.ecommerce.ecommerce.users.User;
@@ -48,6 +50,7 @@ public class CartService {
                 });
     }
 
+    @RichLog(category = LogCategory.CART, action = "GET_CART")
     public CartResponseDTO getCart(String email) {
         User user = findUserOrThrow(email);
         Cart cart = getOrCreateCart(user);
@@ -55,6 +58,7 @@ public class CartService {
     }
 
     @Transactional
+    @RichLog(category = LogCategory.CART, action = "ADD_TO_CART")
     public CartResponseDTO addToCart(String email, AddToCartRequestDTO dto) {
         User user = findUserOrThrow(email);
         Cart cart = getOrCreateCart(user);
@@ -93,6 +97,7 @@ public class CartService {
     }
 
     @Transactional
+    @RichLog(category = LogCategory.CART, action = "UPDATE_CART_ITEM")
     public CartResponseDTO updateCartItem(String email, Long productId, UpdateCartItemRequestDTO dto) {
         User user = findUserOrThrow(email);
         Cart cart = getOrCreateCart(user);
@@ -114,6 +119,7 @@ public class CartService {
     }
 
     @Transactional
+    @RichLog(category = LogCategory.CART, action = "REMOVE_CART_ITEM")
     public CartResponseDTO removeCartItem(String email, Long productId) {
         User user = findUserOrThrow(email);
         Cart cart = getOrCreateCart(user);
@@ -127,6 +133,7 @@ public class CartService {
     }
 
     @Transactional
+    @RichLog(category = LogCategory.CART, action = "CLEAR_CART")
     public CartResponseDTO clearCart(String email) {
         User user = findUserOrThrow(email);
         Cart cart = getOrCreateCart(user);
@@ -135,6 +142,7 @@ public class CartService {
         return toDTO(cart);
     }
 
+    @RichLog(category = LogCategory.CART, action = "CHECKOUT")
     public CheckoutResponseDTO checkout(String email) {
         List<Long> productIds = cartItemRepository.findDistinctProductIdsByCartUserEmail(email);
         return inventoryLockService.executeWithProductLocks(

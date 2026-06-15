@@ -1,6 +1,9 @@
 package com.ecommerce.ecommerce.inventory;
 
 import com.ecommerce.ecommerce.exception.InventoryConflictException;
+import com.ecommerce.ecommerce.logging.AuditLoggers;
+import com.ecommerce.ecommerce.logging.LogCategory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,8 @@ import java.util.concurrent.locks.ReentrantLock;
 @Service
 @ConditionalOnProperty(name = "app.inventory.lock.type", havingValue = "local", matchIfMissing = true)
 public class LocalInventoryLockService implements InventoryLockService {
+
+    private static final Logger log = AuditLoggers.forCategory(LogCategory.INVENTORY);
 
     private final ConcurrentHashMap<Long, ReentrantLock> locks = new ConcurrentHashMap<>();
     private final long waitTimeMs;
@@ -32,14 +37,17 @@ public class LocalInventoryLockService implements InventoryLockService {
 
         List<ReentrantLock> acquiredLocks = new ArrayList<>();
         try {
+            log.info("category=INVENTORY event=inventory_lock_request provider=local productIds={}", orderedProductIds);
             for (Long productId : orderedProductIds) {
                 ReentrantLock lock = locks.computeIfAbsent(productId, ignored -> new ReentrantLock());
                 if (!lock.tryLock(waitTimeMs, TimeUnit.MILLISECONDS)) {
+                    log.warn("category=INVENTORY event=inventory_lock_timeout provider=local productId={} waitTimeMs={}", productId, waitTimeMs);
                     throw new InventoryConflictException("Inventory is busy for product " + productId + ". Please retry.");
                 }
                 acquiredLocks.add(lock);
             }
 
+            log.info("category=INVENTORY event=inventory_lock_acquired provider=local productIds={}", orderedProductIds);
             return action.get();
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
@@ -66,6 +74,9 @@ public class LocalInventoryLockService implements InventoryLockService {
             if (lock.isHeldByCurrentThread()) {
                 lock.unlock();
             }
+        }
+        if (!acquiredLocks.isEmpty()) {
+            log.info("category=INVENTORY event=inventory_lock_released provider=local lockCount={}", acquiredLocks.size());
         }
     }
 }

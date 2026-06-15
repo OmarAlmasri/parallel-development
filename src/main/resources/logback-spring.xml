@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="LOG_DIR" source="app.logging.dir" defaultValue="logs"/>
+
+    <property name="LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %msg%n%ex{short}"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/error/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/error/error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="AUTH_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/auth/auth.log</file>
+        <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/auth/auth.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="CART_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/cart/cart.log</file>
+        <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/cart/cart.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="ORDER_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/order/order.log</file>
+        <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/order/order.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="PRODUCT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/product/product.log</file>
+        <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/product/product.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="CATEGORY_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/category/category.log</file>
+        <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/category/category.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="INVENTORY_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/inventory/inventory.log</file>
+        <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/inventory/inventory.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="TRANSACTION_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/transaction/transaction.log</file>
+        <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/transaction/transaction.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="USER_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/user/user.log</file>
+        <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/user/user.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="BATCH_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/batch/batch.log</file>
+        <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/batch/batch.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="CAPACITY_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/capacity/capacity.log</file>
+        <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/capacity/capacity.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="EXTERNAL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/external/external.log</file>
+        <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/external/external.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="SYSTEM_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/system/system.log</file>
+        <encoder><pattern>${LOG_PATTERN}</pattern></encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/system/system.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="com.ecommerce.audit.auth" level="INFO" additivity="false">
+        <appender-ref ref="AUTH_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.audit.cart" level="INFO" additivity="false">
+        <appender-ref ref="CART_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.audit.order" level="INFO" additivity="false">
+        <appender-ref ref="ORDER_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.audit.product" level="INFO" additivity="false">
+        <appender-ref ref="PRODUCT_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.audit.category" level="INFO" additivity="false">
+        <appender-ref ref="CATEGORY_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.audit.inventory" level="INFO" additivity="false">
+        <appender-ref ref="INVENTORY_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.audit.transaction" level="INFO" additivity="false">
+        <appender-ref ref="TRANSACTION_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.audit.user" level="INFO" additivity="false">
+        <appender-ref ref="USER_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.audit.batch" level="INFO" additivity="false">
+        <appender-ref ref="BATCH_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.audit.capacity" level="INFO" additivity="false">
+        <appender-ref ref="CAPACITY_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.audit.external" level="INFO" additivity="false">
+        <appender-ref ref="EXTERNAL_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.audit.system" level="INFO" additivity="false">
+        <appender-ref ref="SYSTEM_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <logger name="com.ecommerce.ecommerce.auth" level="INFO" additivity="false">
+        <appender-ref ref="AUTH_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.ecommerce.cart" level="INFO" additivity="false">
+        <appender-ref ref="CART_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.ecommerce.order" level="INFO" additivity="false">
+        <appender-ref ref="ORDER_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.ecommerce.product" level="INFO" additivity="false">
+        <appender-ref ref="PRODUCT_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.ecommerce.category" level="INFO" additivity="false">
+        <appender-ref ref="CATEGORY_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.ecommerce.inventory" level="INFO" additivity="false">
+        <appender-ref ref="INVENTORY_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.ecommerce.transaction" level="INFO" additivity="false">
+        <appender-ref ref="TRANSACTION_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.ecommerce.users" level="INFO" additivity="false">
+        <appender-ref ref="USER_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.ecommerce.batch" level="INFO" additivity="false">
+        <appender-ref ref="BATCH_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.ecommerce.capacity" level="INFO" additivity="false">
+        <appender-ref ref="CAPACITY_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.ecommerce.rabbitmq" level="INFO" additivity="false">
+        <appender-ref ref="EXTERNAL_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="com.ecommerce.ecommerce.report" level="INFO" additivity="false">
+        <appender-ref ref="BATCH_FILE"/><appender-ref ref="ERROR_FILE"/><appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="SYSTEM_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

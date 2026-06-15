@@ -1,12 +1,13 @@
 package com.ecommerce.ecommerce.report;
 
+import com.ecommerce.ecommerce.logging.LogCategory;
+import com.ecommerce.ecommerce.logging.RichLog;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 
 @Service
 public class EmailService {
@@ -17,6 +18,7 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
+    @RichLog(category = LogCategory.EXTERNAL, action = "SEND_EMAIL_WITH_ATTACHMENT")
     public void sendEmailWithAttachment(String to, String subject,
                                          String body, byte[] attachment,
                                          String attachmentFilename) {
@@ -33,6 +35,7 @@ public class EmailService {
         }
     }
     
+    @RichLog(category = LogCategory.EXTERNAL, action = "SEND_EMAIL")
     public void sendEmail(String to , String from ,String subject, String body) {
     	try {
     		SimpleMailMessage message = new SimpleMailMessage();
@@ -42,12 +45,12 @@ public class EmailService {
     		message.setText(body);
     		mailSender.send(message);
     		
-    		System.out.println("Sent an email to : " + to);  
     	} catch(Exception e) {
     		throw new RuntimeException("Failed to send email: " + e.getMessage());
     	}
     }
     
+    @RichLog(category = LogCategory.EXTERNAL, action = "SEND_ORDER_CONFIRMATION")
     public void sendOrderConfirmation(String toEmail, Long orderId, String totalPrice) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();

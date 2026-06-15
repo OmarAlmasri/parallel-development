@@ -3,6 +3,8 @@ package com.ecommerce.ecommerce.category;
 
 import com.ecommerce.ecommerce.category.dto.CategoryRequestDTO;
 import com.ecommerce.ecommerce.category.dto.CategoryResponseDTO;
+import com.ecommerce.ecommerce.logging.LogCategory;
+import com.ecommerce.ecommerce.logging.RichLog;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,7 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
+    @RichLog(category = LogCategory.CATEGORY, action = "GET_CATEGORIES")
     public List<CategoryResponseDTO> getAllCategories() {
         return categoryRepository.findAll()
                 .stream()
@@ -26,6 +29,7 @@ public class CategoryService {
     }
 
     @Transactional
+    @RichLog(category = LogCategory.CATEGORY, action = "CREATE_CATEGORY")
     public CategoryResponseDTO createCategory(CategoryRequestDTO dto) {
         if (categoryRepository.existsByNameIgnoreCase(dto.getName())) {
             throw new RuntimeException("Category already exists: " + dto.getName());
@@ -37,6 +41,7 @@ public class CategoryService {
     }
 
     @Transactional
+    @RichLog(category = LogCategory.CATEGORY, action = "DELETE_CATEGORY")
     public void deleteCategory(Long id) {
         if (!categoryRepository.existsById(id)) {
             throw new RuntimeException("Category not found with id: " + id);

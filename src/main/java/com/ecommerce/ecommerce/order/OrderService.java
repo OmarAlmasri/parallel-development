@@ -1,5 +1,7 @@
 package com.ecommerce.ecommerce.order;
 
+import com.ecommerce.ecommerce.logging.LogCategory;
+import com.ecommerce.ecommerce.logging.RichLog;
 import com.ecommerce.ecommerce.order.dto.OrderItemResponseDTO;
 import com.ecommerce.ecommerce.order.dto.OrderResponseDTO;
 import com.ecommerce.ecommerce.users.User;
@@ -24,6 +26,7 @@ public class OrderService {
     }
 
     // Get own order history
+    @RichLog(category = LogCategory.ORDER, action = "GET_MY_ORDERS")
     public List<OrderResponseDTO> getMyOrders(String email) {
         User user = findUserOrThrow(email);
         return orderRepository.findByUserId(user.getId())
@@ -33,6 +36,7 @@ public class OrderService {
     }
 
     // Get single order by ID — user can only see own, admin sees all
+    @RichLog(category = LogCategory.ORDER, action = "GET_ORDER_BY_ID")
     public OrderResponseDTO getOrderById(Long orderId, String email) {
         User user = findUserOrThrow(email);
         Order order = orderRepository.findById(orderId)
@@ -49,6 +53,7 @@ public class OrderService {
     }
 
     // Admin — get all orders
+    @RichLog(category = LogCategory.ORDER, action = "GET_ALL_ORDERS")
     public List<OrderResponseDTO> getAllOrders() {
         return orderRepository.findAll()
                 .stream()

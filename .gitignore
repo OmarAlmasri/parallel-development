@@ -5,6 +5,7 @@ target/
 docs/
 # Log file
 *.log
+runtime-logs/
 
 # BlueJ files
 *.ctxt

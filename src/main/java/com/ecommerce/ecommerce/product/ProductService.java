@@ -4,6 +4,8 @@ package com.ecommerce.ecommerce.product;
 import com.ecommerce.ecommerce.category.Category;
 import com.ecommerce.ecommerce.category.CategoryRepository;
 import com.ecommerce.ecommerce.category.dto.CategoryResponseDTO;
+import com.ecommerce.ecommerce.logging.LogCategory;
+import com.ecommerce.ecommerce.logging.RichLog;
 import com.ecommerce.ecommerce.product.dto.ProductRequestDTO;
 import com.ecommerce.ecommerce.product.dto.ProductResponseDTO;
 import org.springframework.cache.annotation.CacheEvict;
@@ -28,6 +30,7 @@ public class ProductService {
     }
 
     @Cacheable(cacheNames = "productLists", key = "#categoryId == null ? 'all' : 'category:' + #categoryId")
+    @RichLog(category = LogCategory.PRODUCT, action = "GET_PRODUCTS")
     public List<ProductResponseDTO> getAllProducts(Long categoryId) {
         List<Product> products = (categoryId != null)
                 ? productRepository.findByCategoryId(categoryId)
@@ -36,12 +39,14 @@ public class ProductService {
     }
 
     @Cacheable(cacheNames = "products", key = "#id")
+    @RichLog(category = LogCategory.PRODUCT, action = "GET_PRODUCT_BY_ID")
     public ProductResponseDTO getProductById(Long id) {
         return toDTO(findByIdOrThrow(id));
     }
 
     @Transactional
     @CacheEvict(cacheNames = "productLists", allEntries = true)
+    @RichLog(category = LogCategory.PRODUCT, action = "CREATE_PRODUCT")
     public ProductResponseDTO createProduct(ProductRequestDTO dto) {
         Category category = findCategoryOrThrow(dto.getCategoryId());
         Product product = new Product();
@@ -54,6 +59,7 @@ public class ProductService {
             @CacheEvict(cacheNames = "products", key = "#id"),
             @CacheEvict(cacheNames = "productLists", allEntries = true)
     })
+    @RichLog(category = LogCategory.PRODUCT, action = "UPDATE_PRODUCT")
     public ProductResponseDTO updateProduct(Long id, ProductRequestDTO dto) {
         Product product = findByIdOrThrow(id);
         Category category = findCategoryOrThrow(dto.getCategoryId());
@@ -66,6 +72,7 @@ public class ProductService {
             @CacheEvict(cacheNames = "products", key = "#id"),
             @CacheEvict(cacheNames = "productLists", allEntries = true)
     })
+    @RichLog(category = LogCategory.PRODUCT, action = "DELETE_PRODUCT")
     public void deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
             throw new RuntimeException("Product not found with id: " + id);

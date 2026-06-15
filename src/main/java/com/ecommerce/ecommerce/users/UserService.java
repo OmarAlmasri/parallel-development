@@ -1,6 +1,8 @@
 package com.ecommerce.ecommerce.users;
 
 
+import com.ecommerce.ecommerce.logging.LogCategory;
+import com.ecommerce.ecommerce.logging.RichLog;
 import com.ecommerce.ecommerce.transaction.Transaction;
 import com.ecommerce.ecommerce.transaction.TransactionRepository;
 import com.ecommerce.ecommerce.transaction.TransactionType;
@@ -28,12 +30,14 @@ public class UserService {
         this.transactionRepository = transactionRepository;
     }
     
+    @RichLog(category = LogCategory.USER, action = "GET_PROFILE")
     public UserResponseDTO getProfile(String email) {
         User user = findByEmailOrThrow(email);
         return toDTO(user);
     }
 
     @Transactional
+    @RichLog(category = LogCategory.USER, action = "UPDATE_PROFILE")
     public UserResponseDTO updateProfile(String email, UpdateUserRequestDTO dto) {
         User user = findByEmailOrThrow(email);
         user.setName(dto.getName());
@@ -41,6 +45,7 @@ public class UserService {
     }
 
     @Transactional
+    @RichLog(category = LogCategory.USER, action = "DEPOSIT")
     public UserResponseDTO deposit(String email, DepositRequestDTO dto) {
         User user = findByEmailOrThrow(email);
         user.setBalance(user.getBalance().add(dto.getAmount()));
@@ -56,6 +61,7 @@ public class UserService {
         return toDTO(user);
     }
 
+    @RichLog(category = LogCategory.USER, action = "GET_ALL_USERS")
     public List<UserResponseDTO> getAllUsers() {
         return userRepository.findAll()
                 .stream()
@@ -64,6 +70,7 @@ public class UserService {
     }
 
     @Transactional
+    @RichLog(category = LogCategory.USER, action = "DELETE_USER")
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
             throw new RuntimeException("User not found with id: " + id);

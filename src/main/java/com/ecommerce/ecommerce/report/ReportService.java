@@ -1,5 +1,7 @@
 package com.ecommerce.ecommerce.report;
 
+import com.ecommerce.ecommerce.logging.LogCategory;
+import com.ecommerce.ecommerce.logging.RichLog;
 import com.ecommerce.ecommerce.order.OrderItemRepository;
 import com.ecommerce.ecommerce.transaction.Transaction;
 import com.ecommerce.ecommerce.transaction.TransactionRepository;
@@ -37,6 +39,7 @@ public class ReportService {
 
     // ---- Weekly Transactions Report ----
 
+    @RichLog(category = LogCategory.BATCH, action = "SEND_WEEKLY_TRANSACTIONS_REPORT")
     public void sendWeeklyTransactionsReport() {
         LocalDateTime to = LocalDateTime.now();
         LocalDateTime from = to.minusDays(7);
@@ -70,6 +73,7 @@ public class ReportService {
 
     // ---- Best Sellers Report ----
 
+    @RichLog(category = LogCategory.BATCH, action = "SEND_BEST_SELLERS_REPORT")
     public void sendBestSellersReport() {
         List<Object[]> results = orderItemRepository.findBestSellersByCategory();
         byte[] csv = buildBestSellersCsv(results);

@@ -1,6 +1,9 @@
 package com.ecommerce.ecommerce.inventory;
 
 import com.ecommerce.ecommerce.exception.InventoryConflictException;
+import com.ecommerce.ecommerce.logging.AuditLoggers;
+import com.ecommerce.ecommerce.logging.LogCategory;
+import org.slf4j.Logger;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +19,8 @@ import java.util.function.Supplier;
 @Service
 @ConditionalOnProperty(name = "app.inventory.lock.type", havingValue = "redis")
 public class RedisInventoryLockService implements InventoryLockService {
+
+    private static final Logger log = AuditLoggers.forCategory(LogCategory.INVENTORY);
 
     static final String LOCK_PREFIX = "lock:inventory:product:";
 
@@ -38,14 +43,18 @@ public class RedisInventoryLockService implements InventoryLockService {
 
         List<RLock> acquiredLocks = new ArrayList<>();
         try {
+            log.info("category=INVENTORY event=inventory_lock_request provider=redis productIds={}", orderedProductIds);
             for (Long productId : orderedProductIds) {
                 RLock lock = redissonClient.getLock(LOCK_PREFIX + productId);
                 if (!lock.tryLock(waitTimeMs, TimeUnit.MILLISECONDS)) {
+                    log.warn("category=INVENTORY event=inventory_lock_timeout provider=redis productId={} lockKey={} waitTimeMs={}",
+                            productId, LOCK_PREFIX + productId, waitTimeMs);
                     throw new InventoryConflictException("Inventory is busy for product " + productId + ". Please retry.");
                 }
                 acquiredLocks.add(lock);
             }
 
+            log.info("category=INVENTORY event=inventory_lock_acquired provider=redis productIds={}", orderedProductIds);
             return action.get();
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
@@ -72,6 +81,9 @@ public class RedisInventoryLockService implements InventoryLockService {
             if (lock.isHeldByCurrentThread()) {
                 lock.unlock();
             }
+        }
+        if (!acquiredLocks.isEmpty()) {
+            log.info("category=INVENTORY event=inventory_lock_released provider=redis lockCount={}", acquiredLocks.size());
         }
     }
 }

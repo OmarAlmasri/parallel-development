@@ -1,5 +1,7 @@
 package com.ecommerce.ecommerce.transaction;
 
+import com.ecommerce.ecommerce.logging.LogCategory;
+import com.ecommerce.ecommerce.logging.RichLog;
 import com.ecommerce.ecommerce.transaction.dto.TransactionResponseDTO;
 import com.ecommerce.ecommerce.users.User;
 import com.ecommerce.ecommerce.users.UserRepository;
@@ -20,6 +22,7 @@ public class TransactionService {
         this.userRepository = userRepository;
     }
 
+    @RichLog(category = LogCategory.TRANSACTION, action = "GET_MY_TRANSACTIONS")
     public List<TransactionResponseDTO> getMyTransactions(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found: " + email));

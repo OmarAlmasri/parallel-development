@@ -3,6 +3,8 @@ package com.ecommerce.ecommerce.cart;
 import com.ecommerce.ecommerce.cart.dto.CheckoutResponseDTO;
 import com.ecommerce.ecommerce.cart.event.OrderPlacedEvent;
 import com.ecommerce.ecommerce.exception.InventoryConflictException;
+import com.ecommerce.ecommerce.logging.LogCategory;
+import com.ecommerce.ecommerce.logging.RichLog;
 import com.ecommerce.ecommerce.order.Order;
 import com.ecommerce.ecommerce.order.OrderItem;
 import com.ecommerce.ecommerce.order.OrderRepository;
@@ -75,6 +77,7 @@ public class CheckoutTransactionService {
             maxAttempts = 3,
             backoff = @Backoff(delay = 50, multiplier = 2.0)
     )
+    @RichLog(category = LogCategory.TRANSACTION, action = "CHECKOUT_TRANSACTION")
     public CheckoutResponseDTO checkout(String email) {
         User user = findUserOrThrow(email);
         Cart cart = getOrCreateCart(user);

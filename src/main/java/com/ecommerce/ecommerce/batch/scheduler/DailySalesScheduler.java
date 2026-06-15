@@ -1,19 +1,19 @@
 package com.ecommerce.ecommerce.batch.scheduler;
 
-import com.ecommerce.ecommerce.batch.config.DailySalesBatchConfig;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-@Slf4j
 @Component
 //@RequiredArgsConstructor
 public class DailySalesScheduler {
+
+    private static final Logger log = LoggerFactory.getLogger(DailySalesScheduler.class);
 
     private final JobLauncher jobLauncher;
     private final Job dailySalesJob;
@@ -37,12 +37,10 @@ public class DailySalesScheduler {
                     .toJobParameters();
 
             JobExecution execution = jobLauncher.run(dailySalesJob, params);
-            //log.info("Daily sales job started with status: {}", execution.getStatus());
-            System.out.println("Daily sales job started with status " + execution.getStatus());
+            log.info("category=BATCH event=daily_sales_job_started status={}", execution.getStatus());
 
         } catch (Exception e) {
         	throw new RuntimeException("failed to launch daily sales job: " + e.getMessage());
-            //log.error("Failed to launch daily sales job: {}", e.getMessage());
         }
     }
 }

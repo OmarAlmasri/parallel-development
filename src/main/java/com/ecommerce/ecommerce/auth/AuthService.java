@@ -4,6 +4,8 @@ package com.ecommerce.ecommerce.auth;
 import com.ecommerce.ecommerce.auth.dto.AuthResponseDTO;
 import com.ecommerce.ecommerce.auth.dto.LoginRequestDTO;
 import com.ecommerce.ecommerce.auth.dto.RegisterRequestDTO;
+import com.ecommerce.ecommerce.logging.LogCategory;
+import com.ecommerce.ecommerce.logging.RichLog;
 import com.ecommerce.ecommerce.security.JwtUtil;
 import com.ecommerce.ecommerce.users.User;
 import com.ecommerce.ecommerce.users.UserRepository;
@@ -31,6 +33,7 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
     }
 
+    @RichLog(category = LogCategory.AUTH, action = "REGISTER_USER")
     public AuthResponseDTO register(RegisterRequestDTO dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new RuntimeException("Email already in use: " + dto.getEmail());
@@ -48,6 +51,7 @@ public class AuthService {
         return new AuthResponseDTO(token, user.getName(), user.getEmail(), user.getRole().name());
     }
 
+    @RichLog(category = LogCategory.AUTH, action = "LOGIN_USER")
     public AuthResponseDTO login(LoginRequestDTO dto) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword())

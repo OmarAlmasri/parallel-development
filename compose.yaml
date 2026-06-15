@@ -100,6 +100,7 @@ services:
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       APP_INVENTORY_LOCK_TYPE: redis
+      APP_LOGGING_DIR: /app/logs
     depends_on:
       postgres:
         condition: service_healthy
@@ -107,6 +108,8 @@ services:
         condition: service_started
     expose:
       - "8080"
+    volumes:
+      - ./runtime-logs/app1:/app/logs
     networks:
       - backend
 
@@ -133,6 +136,7 @@ services:
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       APP_INVENTORY_LOCK_TYPE: redis
+      APP_LOGGING_DIR: /app/logs
     depends_on:
       postgres:
         condition: service_healthy
@@ -140,6 +144,8 @@ services:
         condition: service_started
     expose:
       - "8080"
+    volumes:
+      - ./runtime-logs/app2:/app/logs
     networks:
       - backend
 
