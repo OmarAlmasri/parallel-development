@@ -50,6 +50,7 @@ public class CartService {
                 });
     }
 
+    @Transactional
     @RichLog(category = LogCategory.CART, action = "GET_CART")
     public CartResponseDTO getCart(String email) {
         User user = findUserOrThrow(email);

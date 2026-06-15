@@ -57,6 +57,19 @@ class CartControllerIntegrationTest extends IntegrationTestSupport {
     }
 
     @Test
+    void getCart_shouldReturn200_whenCartHasExistingItems() throws Exception {
+        addProductToCart(productId, 2);
+
+        mockMvc.perform(get("/api/cart")
+                        .header("Authorization", "Bearer " + userToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.items[0].productId").value(productId))
+                .andExpect(jsonPath("$.items[0].productName").value("Laptop"))
+                .andExpect(jsonPath("$.items[0].quantity").value(2))
+                .andExpect(jsonPath("$.grandTotal").value(1000.00));
+    }
+
+    @Test
     void getCart_shouldReturn401_whenNoToken() throws Exception {
         mockMvc.perform(get("/api/cart"))
                 .andExpect(status().isUnauthorized());
