@@ -31,9 +31,11 @@ services:
 
   rabbitmq:
     image: rabbitmq:3.13-management-alpine
+    command: ["sh", "-c", "rabbitmq-plugins enable --offline rabbitmq_prometheus && rabbitmq-server"]
     ports:
       - "5672:5672"
       - "15672:15672"
+      - "15692:15692"
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: pass
@@ -49,6 +51,7 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
       - --web.enable-lifecycle
+      - --web.enable-remote-write-receiver
     ports:
       - "${PROMETHEUS_PORT:-9090}:9090"
     volumes:
@@ -59,10 +62,38 @@ services:
     networks:
       - backend
 
+  alloy:
+    image: grafana/alloy:latest
+    user: root
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+    depends_on:
+      - prometheus
+      - postgres
+      - redis
+      - rabbitmq
+      - app1
+      - app2
+    ports:
+      - "12345:12345"
+    volumes:
+      - ./docker/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - alloy-data:/var/lib/alloy/data
+      - /run:/run:ro
+      - /:/rootfs:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+    networks:
+      - backend
+
   grafana:
     image: grafana/grafana:11.2.0
     depends_on:
       - prometheus
+      - alloy
     ports:
       - "${GRAFANA_PORT:-3000}:3000"
     environment:
@@ -167,6 +198,7 @@ volumes:
   rabbitmq-data:
   prometheus-data:
   grafana-data:
+  alloy-data:
 
 networks:
   backend:

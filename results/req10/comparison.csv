@@ -1,0 +1,7 @@
+"Label","BaselineSamples","OptimizedSamples","BaselineErrors","OptimizedErrors","BaselineAvgMs","OptimizedAvgMs","AvgImprovementPercent","BaselineP95Ms","OptimizedP95Ms","P95ImprovementPercent","BaselineP99Ms","OptimizedP99Ms","P99ImprovementPercent"
+"BENCH GET /api/cart","2000","2000","0","0","198.82","212.51","-6.89","474","497","-4.85","630","698","-10.79"
+"BENCH GET /api/categories","2000","2000","0","0","171.6","186.57","-8.72","407","466","-14.5","592","664","-12.16"
+"BENCH GET /api/products","2000","2000","0","0","197.17","195.22","0.99","456","455","0.22","612","664","-8.5"
+"BENCH GET /api/products/{threadId}","2000","2000","0","0","185.07","186.65","-0.85","433","457","-5.54","613","647","-5.55"
+"BENCH GET /api/products?categoryId","2000","2000","0","0","187.12","192.92","-3.1","439","492","-12.07","608","680","-11.84"
+"BENCH GET /api/users/me","2000","2000","0","0","178.66","186.5","-4.39","421","443","-5.23","615","642","-4.39"

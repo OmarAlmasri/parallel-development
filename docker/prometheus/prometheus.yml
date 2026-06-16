@@ -8,12 +8,10 @@ scrape_configs:
       - targets:
           - prometheus:9090
 
-  - job_name: spring-cluster
-    metrics_path: /actuator/prometheus
+  - job_name: alloy-http
     static_configs:
       - targets:
-          - app1:8080
-          - app2:8080
+          - alloy:12345
         labels:
           environment: docker-cluster
 

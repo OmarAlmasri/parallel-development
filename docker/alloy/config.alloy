@@ -1,0 +1,91 @@
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+prometheus.remote_write "prometheus" {
+  endpoint {
+    url = "http://prometheus:9090/api/v1/write"
+  }
+}
+
+prometheus.scrape "spring_apps" {
+  job_name        = "spring-app"
+  metrics_path    = "/actuator/prometheus"
+  scrape_interval = "5s"
+  scrape_timeout  = "4s"
+
+  targets = [
+    {
+      __address__ = "app1:8080",
+      instance    = "app1",
+      service     = "app1",
+      application = "ecommerce",
+      environment = "docker-cluster",
+    },
+    {
+      __address__ = "app2:8080",
+      instance    = "app2",
+      service     = "app2",
+      application = "ecommerce",
+      environment = "docker-cluster",
+    },
+  ]
+
+  forward_to = [prometheus.remote_write.prometheus.receiver]
+}
+
+prometheus.exporter.cadvisor "containers" {
+  docker_host      = "unix:///var/run/docker.sock"
+  storage_duration = "5m"
+}
+
+prometheus.scrape "container_metrics" {
+  job_name        = "container-metrics"
+  scrape_interval = "5s"
+  scrape_timeout  = "4s"
+  targets         = prometheus.exporter.cadvisor.containers.targets
+  forward_to      = [prometheus.remote_write.prometheus.receiver]
+}
+
+prometheus.exporter.redis "redis" {
+  redis_addr = "redis://redis:6379"
+}
+
+prometheus.scrape "redis_metrics" {
+  job_name        = "redis"
+  scrape_interval = "5s"
+  scrape_timeout  = "4s"
+  targets         = prometheus.exporter.redis.redis.targets
+  forward_to      = [prometheus.remote_write.prometheus.receiver]
+}
+
+prometheus.exporter.postgres "postgres" {
+  data_source_names = ["postgresql://ecommerce_user:ecommerce_pass@postgres:5432/ecommerce?sslmode=disable"]
+}
+
+prometheus.scrape "postgres_metrics" {
+  job_name        = "postgres"
+  scrape_interval = "5s"
+  scrape_timeout  = "4s"
+  targets         = prometheus.exporter.postgres.postgres.targets
+  forward_to      = [prometheus.remote_write.prometheus.receiver]
+}
+
+prometheus.scrape "rabbitmq_metrics" {
+  job_name        = "rabbitmq"
+  metrics_path    = "/metrics"
+  scrape_interval = "5s"
+  scrape_timeout  = "4s"
+
+  targets = [
+    {
+      __address__ = "rabbitmq:15692",
+      instance    = "rabbitmq",
+      service     = "rabbitmq",
+      environment = "docker-cluster",
+    },
+  ]
+
+  forward_to = [prometheus.remote_write.prometheus.receiver]
+}
